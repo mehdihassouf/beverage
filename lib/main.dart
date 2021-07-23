@@ -158,12 +158,4 @@ if(_isConnected) {
   }
 
 
-// WebviewScaffold(
-//
-// url: 'http://www.storebeverage.com',
-// withJavascript: true,
-// appCacheEnabled: true,
-// geolocationEnabled: true,
-// withZoom: true,
-// ignoreSSLErrors: true,
-// );
+
