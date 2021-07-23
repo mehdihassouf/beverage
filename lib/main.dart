@@ -6,13 +6,17 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'dart:io';
 
 
+
+var connectivityResult = await (Connectivity().checkConnectivity());
+await(Future<ConnectivityResult> checkConnectivity) {}
+
+
 void main() {
   runApp(
         MyApp(),
   );
-
-
 }
+
 
 class MyApp extends StatelessWidget {
   @override
@@ -37,90 +41,114 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  late StreamSubscription sub;
-   bool isConnected = false ;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    sub = Connectivity().onConnectivityChanged.listen((ConnectivityResult res) {
-      isConnected = (res != ConnectivityResult.none);
-    });
+  bool _isConnected = false ;
+  Future<void> _checkInternetConnection() async {
+    try {
+      final response = await InternetAddress.lookup('www.kindacode.com');
+      if (response.isNotEmpty) {
+        setState(() {
+          _isConnected = true;
+        });
+      }
+    } on SocketException catch (err) {
+      setState(() {
+        _isConnected = false;
+      });
+      print(err);
+    }
   }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-
-    super.dispose();
-    sub.cancel();
-  }
-
+ @override
+ void initState() {
+   _checkInternetConnection();
+   super.initState();
+ }
   @override
   Widget build(BuildContext context) {
-    // if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
-    //   return WebviewScaffold(
-    //
-    //     url: 'http://www.storebeverage.com',
-    //     withJavascript: true,
-    //     appCacheEnabled: true,
-    //     geolocationEnabled: true,
-    //     withZoom: true,
-    //     ignoreSSLErrors: true,
-    //   );
+
+    // if (connectivityResult == ConnectivityResult.mobile ) {
+    //   // return WebviewScaffold(
+    //   //
+    //   //   url: 'http://www.storebeverage.com',
+    //   //   withJavascript: true,
+    //   //   appCacheEnabled: true,
+    //   //   geolocationEnabled: true,
+    //   //   withZoom: true,
+    //   //   ignoreSSLErrors: true,
+    //   // );
+    //   return Center(child:Text(connectivityResult));
     // }
-    // else {
+    // else if( connectivityResult == ConnectivityResult.wifi){
+    //   // return WebviewScaffold(
+    //   //
+    //   //   url: 'http://www.storebeverage.com',
+    //   //   withJavascript: true,
+    //   //   appCacheEnabled: true,
+    //   //   geolocationEnabled: true,
+    //   //   withZoom: true,
+    //   //   ignoreSSLErrors: true,
+    //   // );
+    //   return  Center(child:Text(connectivityResult));
+    // }
+    // else{
     //   return Scaffold(
     //
     //       body: Center(
-    //     child: Text(
-    //       'Internet non disponible',
-    //       style: TextStyle(color: Colors.red[900], fontSize: 25.0),
-    //     ),
+    //     // child: Text(
+    //     //   'Internet non disponible',
+    //     //   style: TextStyle(color: Colors.red[900], fontSize: 25.0),
+    //     // ),
+    //         child: FlatButton(
+    //           child: Text('clickme'),
+    //           onPressed: (){
+    //             print(connectivityResult);
+    //           },
+    //         ),
     //   ));
     // }
 
-    if (isConnected == false) {
+if(_isConnected) {
+  return WebviewScaffold(
+
+        url: 'http://www.storebeverage.com',
+        withJavascript: true,
+        appCacheEnabled: true,
+        geolocationEnabled: true,
+        withZoom: true,
+        ignoreSSLErrors: true,
+  );
+}else{
       return Scaffold(
-        body:
 
-        Padding(
-          padding: const EdgeInsets.only(top:300),
-          child: Center(
-
-            child: Column(
-
-              children: [
-
-                Icon(
-                  Icons.wifi_off,
-                  size: 60,
-                ),
-                ElevatedButton(
-
-                    onPressed: () {
-                      exit(0);
-                    },
-                    child: Text('Fermer')
-                ),
-
-              ],
-            ),
-          ),
+          body: Center(
+        child: Text(
+          'Internet non disponible',
+          style: TextStyle(color: Colors.red[900], fontSize: 25.0),
         ),
+      )
       );
-    }
-    else {
-      return  WebviewScaffold(
+        }
 
-              url: 'http://www.storebeverage.com',
-              withJavascript: true,
-              appCacheEnabled: true,
-              geolocationEnabled: true,
-              withZoom: true,
-              ignoreSSLErrors: true,
-              );
-    }
+
+
+
+
+
+
+
+
+
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text('Kindacode.com'),
+    //   ),
+    //   body: Center(
+    //     child: Text(_isConnected == true ? 'Connected' : 'Not Connected',
+    //         style: TextStyle(fontSize: 24)),
+    //   ),
+    //   floatingActionButton: FloatingActionButton(
+    //       onPressed: _checkInternetConnection, child: Icon(Icons.info)),
+    // );
+  }
 
 
 
@@ -128,7 +156,7 @@ class _MainState extends State<Main> {
 
 
   }
-}
+
 
 // WebviewScaffold(
 //
